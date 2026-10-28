@@ -1,20 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/lib/actions/auth";
-
-// Temporary page for checking auth; replaced by the feed in Task 10.
-export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase.from("profiles").select("username").eq("id", user!.id).single();
-
+// Placeholder until the feed lands in Task 10.
+export default function HomePage() {
   return (
-    <main className="p-8">
-      <p>Signed in as @{profile?.username}</p>
-      <form action={signOut}>
-        <button type="submit">Sign out</button>
-      </form>
-    </main>
+    <div className="sticky top-0 z-10 border-b bg-background/80 px-4 py-3 backdrop-blur">
+      <h1 className="text-xl font-bold">Home</h1>
+    </div>
   );
 }
