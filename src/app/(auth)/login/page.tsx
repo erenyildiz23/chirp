@@ -7,6 +7,7 @@ export const metadata: Metadata = { title: "Log in" };
 
 const ERRORS: Record<string, string> = {
   auth: "That sign-in link is invalid or has expired.",
+  confirm: "That confirmation link is invalid or was already used. If you already confirmed, just log in.",
   github: "GitHub sign-in isn't available right now.",
 };
 

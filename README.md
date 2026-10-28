@@ -99,7 +99,7 @@ npm run test:e2e    # Playwright: sign up and post, follow/like/repost notificat
    npx supabase link --project-ref <project-ref>
    npx supabase db push
    ```
-2. In the Supabase dashboard under **Authentication → URL Configuration**, set the site URL to your Vercel URL and add `https://<your-app>.vercel.app/auth/callback` as a redirect URL.
+2. In the Supabase dashboard under **Authentication → URL Configuration**, set the site URL to your Vercel URL and add `https://<your-app>.vercel.app/**` as a redirect URL. Under **Authentication → Emails → Confirm signup**, replace the template with `supabase/templates/confirmation.html` so confirmation links go to `/auth/confirm` and work in any browser.
 3. For GitHub sign-in, create a GitHub OAuth App (**Settings → Developer settings → OAuth Apps**) with the callback URL `https://<project-ref>.supabase.co/auth/v1/callback`, then enable the GitHub provider in Supabase with its client id and secret.
 4. Create a Vercel project from this repository and set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `DEMO_EMAIL` and `DEMO_PASSWORD`. Use the project's production domain (e.g. `chirp-xxxx.vercel.app`) as the site URL, not the longer team alias. New projects have **Vercel Authentication** turned on, which puts a Vercel login in front of every `*.vercel.app` address; turn it off under **Settings → Deployment Protection** so visitors can reach the site.
 5. Create the demo account from your machine (the service role key never goes to Vercel):
