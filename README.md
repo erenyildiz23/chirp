@@ -64,7 +64,7 @@ scripts/seed-demo.ts   creates the demo account in a real project
 
 ## Running it locally
 
-Requirements: Node 20+, Docker (for the local Supabase stack).
+Requirements: Node 22+, Docker (for the local Supabase stack).
 
 ```bash
 npm ci
@@ -90,7 +90,7 @@ npm run test:db     # pgTAP: schema, RLS, triggers, feed, search, storage (needs
 npm run test:e2e    # Playwright: sign up and post, follow/like/repost notifications, replies
 ```
 
-GitHub Actions runs all of these on every push.
+`.github/workflows/ci.yml` runs all of these in GitHub Actions on every push.
 
 ## Deploying
 
@@ -107,6 +107,7 @@ GitHub Actions runs all of these on every push.
    SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_SERVICE_ROLE_KEY=... \
    DEMO_EMAIL=... DEMO_PASSWORD=... npx tsx scripts/seed-demo.ts
    ```
+   The demo account is flagged `is_demo`, so the database refuses changes to its email, password and username, even from a demo session. Running the script again resets its password and profile if a visitor changed the name, bio or avatar.
 
 ## What changed from the PHP version
 
