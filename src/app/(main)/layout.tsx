@@ -1,11 +1,12 @@
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { RightRail } from "@/components/layout/right-rail";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
+import { getUnreadCount } from "@/lib/queries/notifications";
 import { getCurrentProfile } from "@/lib/queries/profiles";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const profile = await getCurrentProfile();
-  const unreadCount = 0;
+  const unreadCount = profile ? await getUnreadCount() : 0;
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[1265px] justify-center">
