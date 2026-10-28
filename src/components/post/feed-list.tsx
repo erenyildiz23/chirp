@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/actions/result";
-import type { FeedCursor, FeedItem, FeedPage } from "@/lib/queries/feed-page";
+import { type FeedCursor, type FeedItem, type FeedPage, mergeFeedItems } from "@/lib/queries/feed-page";
 import { PostCard, type Viewer } from "./post-card";
 
 type FeedListProps = {
@@ -16,21 +16,23 @@ type FeedListProps = {
 
 /**
  * Renders the server-rendered first page plus any pages loaded with "Load more".
- * The first page stays a prop so router.refresh() (after posting) updates it.
+ * When router.refresh() brings a new first page (after posting), it is merged into
+ * what is already shown, so nothing that scrolled past page one disappears.
  */
 export function FeedList({ initialPage, viewer, loadMore, emptyMessage }: FeedListProps) {
-  const [extra, setExtra] = useState<FeedItem[]>([]);
+  const [shown, setShown] = useState<FeedItem[]>(initialPage.items);
+  const [lastInitial, setLastInitial] = useState(initialPage);
   const [cursor, setCursor] = useState<FeedCursor | null | undefined>(undefined);
   const [deleted, setDeleted] = useState<Set<number>>(new Set());
   const [pending, startTransition] = useTransition();
 
+  if (initialPage !== lastInitial) {
+    setLastInitial(initialPage);
+    setShown((prev) => mergeFeedItems(initialPage.items, prev));
+  }
+
   const nextCursor = cursor === undefined ? initialPage.nextCursor : cursor;
-  const seen = new Set<string>();
-  const items = [...initialPage.items, ...extra].filter((item) => {
-    if (!item.item_key || seen.has(item.item_key) || deleted.has(item.post_id!)) return false;
-    seen.add(item.item_key);
-    return true;
-  });
+  const items = shown.filter((item) => !deleted.has(item.post_id!));
 
   function more() {
     if (!nextCursor) return;
@@ -40,7 +42,7 @@ export function FeedList({ initialPage, viewer, loadMore, emptyMessage }: FeedLi
         toast.error(result.error);
         return;
       }
-      setExtra((prev) => [...prev, ...result.data.items]);
+      setShown((prev) => mergeFeedItems(prev, result.data.items));
       setCursor(result.data.nextCursor);
     });
   }
