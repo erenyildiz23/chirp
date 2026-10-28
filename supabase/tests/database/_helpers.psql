@@ -1,0 +1,50 @@
+-- Shared helpers for pgTAP tests. Included with `\ir _helpers.psql` right after `begin;`
+-- so everything here is rolled back with the test transaction.
+
+create extension if not exists pgtap with schema extensions;
+
+create schema if not exists tests;
+
+create or replace function tests.create_user(p_username text)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
+                          raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values (v_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+          p_username || '-' || substr(v_id::text, 1, 8) || '@test.local', '', now(),
+          '{"provider":"email","providers":["email"]}'::jsonb,
+          jsonb_build_object('username', p_username, 'display_name', p_username),
+          now(), now());
+  return v_id;
+end;
+$$;
+
+create or replace function tests.authenticate_as(p_user uuid)
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims',
+                     json_build_object('sub', p_user, 'role', 'authenticated')::text, true);
+end;
+$$;
+
+create or replace function tests.clear_auth()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('role', 'postgres', true);
+  perform set_config('request.jwt.claims', '', true);
+end;
+$$;
+
+grant usage on schema tests to anon, authenticated;
+grant execute on all functions in schema tests to anon, authenticated;
