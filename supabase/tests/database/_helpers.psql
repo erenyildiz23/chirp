@@ -46,5 +46,19 @@ begin
 end;
 $$;
 
+-- Runs a statement as the current role and returns how many rows it touched.
+create or replace function tests.affected(p_sql text)
+returns bigint
+language plpgsql
+as $$
+declare
+  v_count bigint;
+begin
+  execute p_sql;
+  get diagnostics v_count = row_count;
+  return v_count;
+end;
+$$;
+
 grant usage on schema tests to anon, authenticated;
 grant execute on all functions in schema tests to anon, authenticated;
