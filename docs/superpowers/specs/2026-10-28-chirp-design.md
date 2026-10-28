@@ -84,6 +84,7 @@ Created by an `after insert on auth.users` trigger. Username source: signup form
 | content | text | ≤ 280 chars, nullable |
 | image_path | text | nullable, path in `post-images` bucket |
 | reply_to_id | bigint FK posts | nullable, on delete set null |
+| is_reply | boolean | set on insert to `reply_to_id is not null`; stays true if the parent is deleted |
 | like_count, repost_count, reply_count | int | default 0, maintained by triggers |
 | created_at | timestamptz | default now() |
 
@@ -117,7 +118,7 @@ Inserted by `security definer` triggers on `follows`, `likes`, `reposts` and rep
 `home_feed(p_cursor timestamptz default null, p_limit int default 20)`, `security invoker`, returns rows of:
 `post fields + author profile fields + reposted_by (profile or null) + activity_at + liked_by_me + reposted_by_me`.
 
-Includes: posts by the current user, posts by followed users, and reposts by followed users (the latter with `activity_at = repost.created_at`). Excludes replies from the main feed. Ordered by `activity_at desc`, keyset paginated on `activity_at < p_cursor`. If the same post appears as both an original and a repost, show the most recent activity only.
+Includes: posts by the current user, posts by followed users, and reposts by followed users (the latter with `activity_at = repost.created_at`). Excludes replies (`is_reply`) from the main feed. Ordered by `activity_at desc, item_key desc`, keyset paginated on the pair `(activity_at, item_key)` so equal timestamps never skip or duplicate items. If the same post appears as both an original and a repost, show the most recent activity only.
 
 A similar `profile_timeline(p_username, p_tab, p_cursor, p_limit)` returns a user's posts+reposts (`posts` tab) or their replies (`replies` tab).
 
