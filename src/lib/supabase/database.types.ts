@@ -193,6 +193,9 @@ isOneToOne: false
 "is_reserved_username":
 { Args: { "p_username": string }; Returns: boolean
                            },
+"like_pattern":
+{ Args: { "p_query": string }; Returns: string
+                           },
 "notify":
 { Args: { "p_actor": string,"p_post": number,"p_recipient": string,"p_type": Database["public"]['Enums']["notification_type"] }; Returns: undefined
                            },
@@ -206,6 +209,29 @@ isOneToOne: false
       } },
 "profile_timeline":
 { Args: { "p_cursor_at"?: string,"p_cursor_key"?: string,"p_limit"?: number,"p_tab": string,"p_username": string }; Returns: Database["public"]['CompositeTypes']["feed_item"][]
+                          SetofOptions: {
+        from: "*"
+        to: "feed_item"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
+"search_people":
+{ Args: { "p_limit"?: number,"p_query": string }; Returns: {
+              "avatar_url": string | null,
+"bio": string | null,
+"created_at": string,
+"display_name": string,
+"id": string,
+"username": string
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "profiles"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
+"search_posts":
+{ Args: { "p_limit"?: number,"p_query": string }; Returns: Database["public"]['CompositeTypes']["feed_item"][]
                           SetofOptions: {
         from: "*"
         to: "feed_item"
