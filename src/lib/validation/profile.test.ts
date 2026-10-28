@@ -8,6 +8,12 @@ describe("profileSchema", () => {
     expect(profileSchema.safeParse({ ...valid, username }).success).toBe(false);
   });
 
+  test("rejects usernames that collide with app routes", () => {
+    const result = profileSchema.safeParse({ ...valid, username: "settings" });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].message).toBe("That username is reserved");
+  });
+
   test("accepts a valid profile", () => {
     expect(profileSchema.safeParse(valid).success).toBe(true);
   });

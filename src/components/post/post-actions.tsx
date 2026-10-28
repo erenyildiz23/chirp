@@ -17,7 +17,7 @@ export function PostActions({ item, href, signedIn }: PostActionsProps) {
       <Link
         href={href}
         className="group flex items-center gap-1 hover:text-primary"
-        aria-label={`${item.reply_count ?? 0} replies. Reply`}
+        aria-label={`${item.reply_count ?? 0} ${item.reply_count === 1 ? "reply" : "replies"}. Reply`}
       >
         <span className="rounded-full p-2 group-hover:bg-primary/10">
           <MessageCircle className="size-[18px]" />

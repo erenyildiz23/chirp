@@ -190,9 +190,20 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"is_reserved_username":
+{ Args: { "p_username": string }; Returns: boolean
+                           },
 "notify":
 { Args: { "p_actor": string,"p_post": number,"p_recipient": string,"p_type": Database["public"]['Enums']["notification_type"] }; Returns: undefined
                            },
+"post_thread_items":
+{ Args: { "p_post_id": number }; Returns: Database["public"]['CompositeTypes']["feed_item"][]
+                          SetofOptions: {
+        from: "*"
+        to: "feed_item"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "profile_timeline":
 { Args: { "p_cursor_at"?: string,"p_cursor_key"?: string,"p_limit"?: number,"p_tab": string,"p_username": string }; Returns: Database["public"]['CompositeTypes']["feed_item"][]
                           SetofOptions: {

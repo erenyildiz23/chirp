@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getHomeFeed } from "@/lib/queries/feed";
+import { getHomeFeed, getProfileTimeline, type TimelineTab } from "@/lib/queries/feed";
 import type { FeedCursor, FeedPage } from "@/lib/queries/feed-page";
 import { createClient } from "@/lib/supabase/server";
 import { isOwnStoragePath } from "@/lib/utils/storage";
@@ -65,6 +65,18 @@ export async function deletePost(postId: number): Promise<ActionResult> {
 export async function loadMoreHomeFeed(cursor: FeedCursor): Promise<ActionResult<FeedPage>> {
   try {
     return ok(await getHomeFeed(cursor));
+  } catch {
+    return fail("Couldn't load more posts");
+  }
+}
+
+export async function loadMoreProfileTimeline(
+  username: string,
+  tab: TimelineTab,
+  cursor: FeedCursor,
+): Promise<ActionResult<FeedPage>> {
+  try {
+    return ok(await getProfileTimeline(username, tab, cursor));
   } catch {
     return fail("Couldn't load more posts");
   }
