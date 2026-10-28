@@ -52,7 +52,7 @@ begin
       'email', now(), now(), now()
     );
 
-    update public.profiles set bio = v_users[i][3] where id = v_id;
+    update public.profiles set bio = v_users[i][3], is_demo = (v_users[i][1] = 'demo') where id = v_id;
   end loop;
 
   -- 30 posts spread over the last 7 days

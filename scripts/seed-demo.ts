@@ -5,6 +5,9 @@
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... DEMO_EMAIL=... DEMO_PASSWORD=... \
  *     npx tsx scripts/seed-demo.ts
  *
+ * Re-running it also resets the demo account (password, username, profile) if a
+ * visitor changed what they could.
+ *
  * The service role key bypasses RLS: run this from your machine only, never ship it.
  */
 import { randomBytes } from "node:crypto";
@@ -98,8 +101,32 @@ async function ensurePosts(userId: string, posts: string[]): Promise<number[]> {
   return data.map((p) => p.id);
 }
 
+/**
+ * Puts the demo account back the way it was: password, username, name, bio and
+ * avatar. The database refuses these changes while is_demo is set, so the flag is
+ * cleared first (the service role can) and set again at the end.
+ */
+async function resetDemo(id: string, password: string): Promise<void> {
+  await must(supabase.from("profiles").update({ is_demo: false }).eq("id", id));
+  const { error } = await supabase.auth.admin.updateUserById(id, { password });
+  if (error) throw error;
+  await must(
+    supabase
+      .from("profiles")
+      .update({ username: DEMO.username, display_name: DEMO.displayName, bio: DEMO.bio, avatar_url: null, is_demo: true })
+      .eq("id", id),
+  );
+  console.log("~ demo account reset");
+}
+
+async function must(query: PromiseLike<{ error: unknown }>): Promise<void> {
+  const { error } = await query;
+  if (error) throw error;
+}
+
 async function main() {
   const demoId = await ensureUser(env("DEMO_EMAIL"), env("DEMO_PASSWORD"), DEMO);
+  await resetDemo(demoId, env("DEMO_PASSWORD"));
   const demoPosts = await ensurePosts(demoId, DEMO.posts);
 
   for (const seed of COMPANIONS) {

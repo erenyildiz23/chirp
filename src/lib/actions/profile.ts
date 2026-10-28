@@ -8,6 +8,7 @@ import { profileSchema } from "@/lib/validation/profile";
 import { type ActionResult, fail, fromZodError } from "./result";
 
 const USERNAME_TAKEN = "Username is already taken";
+const DEMO_LOCKED = "The demo account's username can't be changed";
 
 /** The storage path of an avatar URL we issued for this user, if it is one. */
 function ownAvatarPath(avatarUrl: string | null, userId: string): string | null {
@@ -53,6 +54,7 @@ export async function updateProfile(
     .eq("id", user.id);
   if (error) {
     if (error.code === "23505") return fail(USERNAME_TAKEN, { username: USERNAME_TAKEN });
+    if (error.code === "P0001") return fail(DEMO_LOCKED, { username: DEMO_LOCKED });
     return fail("Couldn't save your profile");
   }
 

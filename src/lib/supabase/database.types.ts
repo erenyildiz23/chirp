@@ -135,14 +135,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "avatar_url": string | null,"bio": string | null,"created_at": string,"display_name": string,"id": string,"username": string
+                    "avatar_url": string | null,"bio": string | null,"created_at": string,"display_name": string,"id": string,"is_demo": boolean,"username": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "avatar_url"?: string | null,"bio"?: string | null,"created_at"?: string,"display_name": string,"id": string,"username": string
+                    "avatar_url"?: string | null,"bio"?: string | null,"created_at"?: string,"display_name": string,"id": string,"is_demo"?: boolean,"username": string
                   }
                   Update: {
-                    "avatar_url"?: string | null,"bio"?: string | null,"created_at"?: string,"display_name"?: string,"id"?: string,"username"?: string
+                    "avatar_url"?: string | null,"bio"?: string | null,"created_at"?: string,"display_name"?: string,"id"?: string,"is_demo"?: boolean,"username"?: string
                   }
                   Relationships: [
                     
@@ -222,6 +222,7 @@ isOneToOne: false
 "created_at": string,
 "display_name": string,
 "id": string,
+"is_demo": boolean,
 "username": string
             }[]
                           SetofOptions: {
