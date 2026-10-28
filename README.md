@@ -4,7 +4,7 @@ A small Twitter-style social app built with **Next.js 15** and **Supabase**. Pos
 
 It started as a rewrite of an old PHP/MySQL class project. The goal was to rebuild it the way I would build it today: typed end to end, with authorization enforced by the database and tests where the logic lives.
 
-**Live demo:** https://&lt;your-app&gt;.vercel.app (use the **Try the demo** button, no sign-up needed)
+**Live demo:** https://chirp-ochre-one.vercel.app (use the **Try the demo** button, no sign-up needed)
 
 | Home (light) | Home (dark) |
 |---|---|
@@ -101,7 +101,7 @@ npm run test:e2e    # Playwright: sign up and post, follow/like/repost notificat
    ```
 2. In the Supabase dashboard under **Authentication → URL Configuration**, set the site URL to your Vercel URL and add `https://<your-app>.vercel.app/auth/callback` as a redirect URL.
 3. For GitHub sign-in, create a GitHub OAuth App (**Settings → Developer settings → OAuth Apps**) with the callback URL `https://<project-ref>.supabase.co/auth/v1/callback`, then enable the GitHub provider in Supabase with its client id and secret.
-4. Create a Vercel project from this repository and set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `DEMO_EMAIL` and `DEMO_PASSWORD`.
+4. Create a Vercel project from this repository and set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `DEMO_EMAIL` and `DEMO_PASSWORD`. Use the project's production domain (e.g. `chirp-xxxx.vercel.app`) as the site URL, not the longer team alias. New projects have **Vercel Authentication** turned on, which puts a Vercel login in front of every `*.vercel.app` address; turn it off under **Settings → Deployment Protection** so visitors can reach the site.
 5. Create the demo account from your machine (the service role key never goes to Vercel):
    ```bash
    SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_SERVICE_ROLE_KEY=... \
