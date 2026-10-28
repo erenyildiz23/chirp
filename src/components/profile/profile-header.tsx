@@ -11,7 +11,7 @@ export function ProfileHeader({ profile, viewerId }: { profile: ProfileWithStats
   const isMe = viewerId === profile.id;
 
   return (
-    <section className="border-b">
+    <section className="border-b" aria-label="Profile">
       <div className="h-32 bg-gradient-to-br from-primary/40 to-primary/10 sm:h-48" />
       <div className="px-4 pb-4">
         <div className="flex items-start justify-between">
